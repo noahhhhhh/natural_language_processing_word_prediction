@@ -1,0 +1,216 @@
+---
+title: "SwiftKey - Word Prediction Milestone Report"
+author: "Noah Xiao (https://au.linkedin.com/in/mengnoahxiao)"
+output: 
+    html_document:
+        theme: cosmo
+        highlight: tango
+---
+
+# 1.0 Introduction
+**SwiftKey** is a German mobile input software provider, who aims to facilitate the input expereince on mobile devices. This project targets to develop a Natural Language Processing (NLP) model to predict the next word a user types in.  
+This milestone report aims to explore the basic data statistics from the provided datasets.  
+The following sections will be covered in this report:  
+1. **Preprocess**  
+2. **Data Exploratory**  
+3. **Term/Gram Analysis**  
+Below is a few steps of set up.  
+```{r echo = F, results = "hide", message = F, warning = F}
+require(stringr)
+require(data.table)
+require(ggplot2)
+require(reshape)
+require(scales)
+require(tm)
+require(SnowballC)
+require(RWeka)
+require(wordcloud)
+require(RColorBrewer)
+```  
+
+# 2.0 Preprocess
+As the the preprocessing in this report is used to explore data, removing bad words and non-Latin words are not involved. A list of steps are involved.  
+1. Convert all words to lower case  
+2. Remove numbers  
+3. Remove punctuations  
+4. Word stemming (remove words ending) 
+5. Strip whitespace  
+
+After the preprocessing, below shows a comparison between before and after.  
+**Before**:  
+```{r echo = F}
+print("If you have an alternative argument, let's hear it! :)")
+```  
+**After**:  
+```{r echo = F}
+print("if you have an alternative argument lets hear it")
+```  
+Having done the data preprocessing, we can conduct the basic data exploratory analysis.  
+
+# 3.0 Data Exploratory
+The purpose of data exploratory is to understand the data structure and relationships.  
+
+## 3.1 Summary Table 
+Below is a basic summary table of lines and words in each of the three datasets.  
+```{r echo = F}
+dtInitSnap <- read.csv("data/RData/dtInitSnap.csv")
+dtInitSnap
+```  
+The *Blog* text file has the least lines (**0.8 million**), but most words per line (**42**);  
+The *News* text file has **2.3 million** lines, and **34** words per line;  
+The *Twitter* text file has the most lines (**2.3 million**), but least words per line (**13**);  
+
+## 3.2 Basic Stats Plots
+The below plots show the basic stats, i.e. Latin/non-Latin words, lines, words per line.  
+```{r echo = F, message = F, warning = F}
+# 2.1.4 melt the summary table
+require(reshape)
+meltInitSnap <- melt(dtInitSnap)
+
+# 2.1.5 plot the summary table
+require(ggplot2)
+require(scales)
+par(mfrow = c(2, 2))
+# number of Lines
+gInitPlotLines <- ggplot(subset(meltInitSnap, variable == "Lines"), aes(x = Text, y = value))
+gInitPlotLines <- gInitPlotLines + geom_bar(stat = "identity", fill = "skyblue2")
+gInitPlotLines <- gInitPlotLines + xlab("File Name")
+gInitPlotLines <- gInitPlotLines + scale_y_continuous(name = "Number of Lines", labels = comma)
+gInitPlotLines <- gInitPlotLines + ggtitle("Stats: Lines")
+gInitPlotLines <- gInitPlotLines + theme_bw()
+gInitPlotLines
+
+# number of Latin Words
+gInitPlotLatinWords <- ggplot(subset(meltInitSnap, variable == "LatinWords"), aes(x = Text, y = value))
+gInitPlotLatinWords <- gInitPlotLatinWords + geom_bar(stat = "identity", fill = "skyblue2")
+gInitPlotLatinWords <- gInitPlotLatinWords + xlab("File Name")
+gInitPlotLatinWords <- gInitPlotLatinWords + scale_y_continuous(name = "Number of Latin Words", labels = comma)
+gInitPlotLatinWords <- gInitPlotLatinWords + ggtitle("Stats: Latin Words")
+gInitPlotLatinWords <- gInitPlotLatinWords + theme_bw()
+gInitPlotLatinWords
+
+# number of Latin Words
+gInitPlotNonLatinWords <- ggplot(subset(meltInitSnap, variable == "NonLatinWords"), aes(x = Text, y = value))
+gInitPlotNonLatinWords <- gInitPlotNonLatinWords + geom_bar(stat = "identity", fill = "skyblue2")
+gInitPlotNonLatinWords <- gInitPlotNonLatinWords + xlab("File Name")
+gInitPlotNonLatinWords <- gInitPlotNonLatinWords + scale_y_continuous(name = "Number of Non Latin Words", labels = comma)
+gInitPlotNonLatinWords <- gInitPlotNonLatinWords + ggtitle("Stats: Non Latin Words")
+gInitPlotNonLatinWords <- gInitPlotNonLatinWords + theme_bw()
+gInitPlotNonLatinWords
+
+# number of Words per Line
+gInitPlotWpL <- ggplot(subset(meltInitSnap, variable == "WordsPerLine"), aes(x = Text, y = value))
+gInitPlotWpL <- gInitPlotWpL + geom_bar(stat = "identity", fill = "skyblue2")
+gInitPlotWpL <- gInitPlotWpL + xlab("File Name")
+gInitPlotWpL <- gInitPlotWpL + scale_y_continuous(name = "Number of Words per Line", labels = comma)
+gInitPlotWpL <- gInitPlotWpL + ggtitle("Stats: Words per Lines")
+gInitPlotWpL <- gInitPlotWpL + theme_bw()
+gInitPlotWpL
+par(mfrow = c(1, 1))
+```  
+
+# 4.0 Term/Gram Analysis
+As Term/Gram analysis involves large amount of compuation, here, samples are used instead of the full datasets. Also, in any kind of large size data exploratory, sample is always preferred than the original datasets. In this report, 20000 records are randomly chosen in each data set.  
+Following the most common approach, four kinds of grams are extracted from the sample sets for this analysis.  
+
+## 4.1 Terms/Grams Summary Table
+Top **15** popular terms/grams are shown below in the summary table.  
+```{r echo = F, message = F, warning = F}
+dtFreq <- read.csv("data/RData/dtFreq.csv")
+dtFreq
+require(reshape)
+meltFreq <- melt(dtFreq)
+```  
+
+## 4.2 Terms/Grams Plots
+Below plots show the frequency distributions of each gram model in the sample data.  
+```{r echo = F, message= F, warning = F}
+# plot the Unigram Frequency
+require(ggplot2)
+require(scales)
+par(mfrow = c(2, 2))
+gFreqUni <- ggplot(meltFreq[, c("Unigram", "variable", "value")], aes(x = Unigram, y = value))
+gFreqUni <- gFreqUni + geom_bar(stat = "identity", fill = "skyblue2")
+gFreqUni <- gFreqUni + xlab("Unigram Word")
+gFreqUni <- gFreqUni + scale_y_continuous(name = "Frequency", labels = comma)
+gFreqUni <- gFreqUni + ggtitle("Stats: Unigram Frequency")
+gFreqUni <- gFreqUni + theme_bw()
+gFreqUni
+
+gFreqBi <- ggplot(meltFreq[, c("Bigram", "variable", "value")], aes(x = Bigram, y = value))
+gFreqBi <- gFreqBi + geom_bar(stat = "identity", fill = "skyblue2")
+gFreqBi <- gFreqBi + xlab("Bigram Words")
+gFreqBi <- gFreqBi + scale_y_continuous(name = "Frequency", labels = comma)
+gFreqBi <- gFreqBi + ggtitle("Stats: Bigram Frequency")
+gFreqBi <- gFreqBi + theme_bw()
+gFreqBi <- gFreqBi + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+gFreqBi
+
+gFreqTri <- ggplot(meltFreq[, c("Trigram", "variable", "value")], aes(x = Trigram, y = value))
+gFreqTri <- gFreqTri + geom_bar(stat = "identity", fill = "skyblue2")
+gFreqTri <- gFreqTri + xlab("Trigram Words")
+gFreqTri <- gFreqTri + scale_y_continuous(name = "Frequency", labels = comma)
+gFreqTri <- gFreqTri + ggtitle("Stats: Trigram Frequency")
+gFreqTri <- gFreqTri + theme_bw()
+gFreqTri <- gFreqTri + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+gFreqTri
+
+gFreqQuatr <- ggplot(meltFreq[, c("Quatrgram", "variable", "value")], aes(x = Quatrgram, y = value))
+gFreqQuatr <- gFreqQuatr + geom_bar(stat = "identity", fill = "skyblue2")
+gFreqQuatr <- gFreqQuatr + xlab("Quatrgram Words")
+gFreqQuatr <- gFreqQuatr + scale_y_continuous(name = "Frequency", labels = comma)
+gFreqQuatr <- gFreqQuatr + ggtitle("Stats: Quatrgram Frequency")
+gFreqQuatr <- gFreqQuatr + theme_bw()
+gFreqQuatr <- gFreqQuatr + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+gFreqQuatr
+```  
+
+In *Unigram model*, **"the"** is the most popular word, followed by **"and"**;  
+In *Bigram model*, **"of the"** is the most popular word combination, followed by **"in the"**;  
+In *Trigram model*, **"one of the"** is the most popular word combination, followed by **"a lot of"**;  
+In *Quatrgram model*, **"in the end of the"** is the most popular word combination, followed by **"the rest of the"**;  
+
+## 4.3 Word Clouds
+Below clouds provide a more vivid look for the frequency.  
+```{r echo = F, message = F, warning = F}
+# word cloud
+load(file = "data/RData/sortUni.RData")
+load(file = "data/RData/sortBi.RData")
+load(file = "data/RData/sortTri.RData")
+load(file = "data/RData/sortQuatr.RData")
+require(wordcloud)
+require(RColorBrewer)
+pal <- brewer.pal(6, "Dark2")
+# wordcloud unigram
+set.seed(999)
+wordcloudUni <- wordcloud(names(tail(sortUni, 30)), tail(sortUni, 30), scale = c(6, 2), colors = pal)
+set.seed(999)
+wordcloudBi <- wordcloud(names(tail(sortBi, 30)), tail(sortBi, 30), scale = c(5, 1), colors = pal)
+set.seed(999)
+wordcloudTri <- wordcloud(names(tail(sortTri, 30)), tail(sortTri, 30), scale = c(4, .5), colors = pal)
+set.seed(999)
+wordcloudQuatr <- wordcloud(names(tail(sortQuatr, 30)), tail(sortQuatr, 30), scale = c(3, .5), colors = pal)
+```  
+
+# 5.0 Summary
+In summary,  
+the *Blog* text file has the least lines (**0.8 million**), but most words per line (**42**);  
+The *News* text file has **2.3 million** lines, and **34** words per line;  
+the *Twitter* text file has the most lines (**2.3 million**), but least words per line (**13**);  
+
+With the Term/Gram basic stats, 
+in *Unigram model*, **"the"** is the most popular word, followed by **"and"**;  
+In *Bigram model*, **"of the"** is the most popular word combination, followed by **"in the"**;  
+In *Trigram model*, **"one of the"** is the most popular word combination, followed by **"a lot of"**;  
+In *Quatrgram model*, **"in the end of the"** is the most popular word combination, followed by **"the rest of the"**;  
+
+# 6.0 Next Step
+In the next step, I will consider  
+1. remove the bad words, utilising an external bad words list.  
+2. change the sequence of some preprocessing steps, e.g. after the tokens are extracted, remove the grams where has numbers. This helps when numbers are embedded in a word, e.g. gr8, sk8 boy, etc.  
+3. create a n-gram dataset for training prediction model.  
+4. find a good model and start prediction practice.  
+5. create a nice-looking and easy-to-use Shiny.app.  
+
+Noah Xiao  
+26/07/15
