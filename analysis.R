@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ##############################################
 ## 0. Set up #################################
 ##############################################
@@ -223,4 +224,30 @@ writeCorpus(corpusRaw[1], path = "data/processed_files/", file = paste("blog_pro
 writeCorpus(corpusRaw[2], path = "data/processed_files/", file = paste("news_processsed.txt"))
 writeCorpus(corpusRaw[3], path = "data/processed_files/", file = paste("twitter_processsed.txt"))
 save(corpusRaw, file = paste("data/processsed.RData"))
+=======
+# set up the working directory
+setwd("/Volumes/Data Science/Google Drive/learning_data_science/Coursera/capstone/")
+
+# list the files
+listFiles <- list.files("data/en_US/")
+list.files("data/en_US/")
+
+# read files
+dataDir <- "data/en_US/"
+# paste directory and file names
+files <- paste(dataDir, listFiles)
+# trim the space
+files <- gsub(" ", "", files)
+con <- file(files[1], open = "r")
+line <- readLines(con)
+close(con)
+
+require(tm)
+fileDir <- file.path(".", "data", "test")
+docs <- Corpus(DirSource(fileDir))
+writeLines(as.character(docs[[1]]))
+dtm <- DocumentTermMatrix(docs)
+docs <- tm_map(docs, removePunctuation)
+
+>>>>>>> fb8f1f646ee7cc38bf28f5b39863385348790b8e
 
