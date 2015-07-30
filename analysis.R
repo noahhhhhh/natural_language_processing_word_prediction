@@ -52,7 +52,7 @@ close(con)
 ##############################################
 require(stringr)
 ## 1.1 replace punctuations and numbers ######
-##############################################
+############################################## (TODO: NX: need to remove punct, not replace with space; need to remove the unigram with number)
 textBlog <- gsub("[[:punct:][:digit:]]", " ", textBlog)
 textNews <- gsub("[[:punct:][:digit:]]", " ", textNews)
 textTwitter <- gsub("[[:punct:][:digit:]]", " ", textTwitter)
@@ -106,6 +106,20 @@ countWordsLatinBlog <- CountWords(textBlog) # 37,881,240
 countWordsLatinNews <- CountWords(textNews) # 34,617,304
 countWordsLatinTwitter <- CountWords(textTwitter) # 30,557,099
 vectorWordsLatin <- c(countWordsLatinBlog, countWordsLatinNews, countWordsLatinTwitter)
+
+# 1.5 to lower
+textBlog <- tolower(textBlog)
+textNews <- tolower(textNews)
+textTwitter <- tolower(textTwitter)
+
+# 1.6 save the files
+save(textBlog, file = "data/RData/textBlog.RData")
+save(textNews, file = "data/RData/textNews.RData")
+save(textTwitter, file = "data/RData/textTwitter.RData")
+
+write.table(textBlog, file = "data/RData/textBlog.txt", quote = F, row.names = F, col.names = F, fileEncoding = "UTF-8")
+write.table(textNews, file = "data/RData/textNews.txt", quote = F, row.names = F, col.names = F, fileEncoding = "UTF-8")
+write.table(textTwitter, file = "data/RData/textTwitter.txt", quote = F, row.names = F, col.names = F, fileEncoding = "UTF-8")
 
 ##############################################
 ## 2. Explore ################################
