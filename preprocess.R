@@ -38,6 +38,7 @@ i <- 1
 
 ## 2.1 translate Latin to ASCII ##############
 for (i in 1:length(listAllFiles)) {
+  filesList[[i]] <- iconv(filesList[[i]], to = "UTF-8")
   filesList[[i]] <- stri_trans_general(filesList[[i]], "Latin-ASCII")
   print(paste("Latin-ASCII -", listAllFiles[i], ": Done"))
 }
@@ -46,7 +47,6 @@ i <- 1
 ## 2.2 convert into UTF-8 and remove non_ASCII
 ## characters ################################
 for (i in 1:length(listAllFiles)) {
-  filesList[[i]] <- iconv(filesList[[i]], to = "UTF-8")
   filesList[[i]] <-gsub("[^[:alpha:][:digit:][:punct:][:space:]]+", " ", filesList[[i]])
   print(paste("Non ASCII to English -", listAllFiles[i], ": Done"))
 }
