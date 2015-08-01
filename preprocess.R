@@ -6,6 +6,7 @@
 ## up the memory #############################
 require(tm)
 require(stringi)
+require(SnowballC)
 rm(list = ls())
 ## 0.2 set up the working directory ##########
 setwd("/Volumes/Data Science/Google Drive/learning_data_science/Coursera/capstone/")
@@ -77,12 +78,27 @@ corpusAll <- Corpus(DirSource(pathTemp, encoding = "UTF-8")
 corpusAll <- tm_map(corpusAll, content_transformer(removePunctuation))
 print(paste("Remove Punctuations - All docs: Done"))
 
-## 2.6 tolower ###############################
+## 2.6 tolower ################################
 corpusAll <- tm_map(corpusAll, content_transformer(tolower))
 print(paste("To lower - All docs: Done"))
-
-
 
 ## 2.7 strip whitespace #######################
 corpusAll <- tm_map(corpusAll, content_transformer(stripWhitespace))
 print(paste("Strip whitespaces - All docs: Done"))
+
+## 2.8 remove bad words #######################
+pathBadWords <- file.path("data", "badwords_en_US", "badwords.txt")
+dfBadWords <- read.table(pathBadWords, sep = "\n") # (NX: this should be done after tokenization)
+mxBadWords <- as.matrix(dfBadWords[1])
+corpusAll <- tm_map(corpusAll, removeWords, mxBadWords)
+print(paste("Remove bad words - All docs: Done"))
+
+## 2.9 stemming ###############################
+corpusAll <- tm_map(corpusAll, content_transformer(stemDocument))
+print(paste("Stemming - All docs: Done"))
+
+## 2.10 save the files for later use ##########
+write.table(as.character(corpusAll[[1]]), "data/en_US/temp/textBlog_preP.txt", quote = F, row.names = F, col.names = F)
+write.table(as.character(corpusAll[[2]]), "data/en_US/temp/textNews_preP.txt", quote = F, row.names = F, col.names = F)
+write.table(as.character(corpusAll[[3]]), "data/en_US/temp/textTwitter_preP.txt", quote = F, row.names = F, col.names = F)
+save(corpusAll, file = "data/RData/corpusAll.RData")
