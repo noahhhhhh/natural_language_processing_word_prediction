@@ -15,6 +15,14 @@ setwd("/Volumes/Data Science/Google Drive/learning_data_science/Coursera/capston
 ## 0.3 load the file #########################
 # full data
 load("data/RData/corpusAll.RData") 
+pathAll <- file.path(".", "data", "en_US", "temp")
+corpusAll <- Corpus(DirSource(pathAll, encoding = "UTF-8")
+                        , readerControl = list(reader = readPlain
+                                               , language = "en_US"
+                                               , load = T
+                        )
+)
+
 # sample data
 pathSample <- file.path(".", "data", "samples")
 corpusSamples <- Corpus(DirSource(pathSample, encoding = "UTF-8")
