@@ -1,10 +1,11 @@
 ##############################################
 ## 0. Set up #################################
 ##############################################
-require(stringi)
-require(data.table)
+
 ## 0.1 load the required libraries and clean #
 ## up the memory #############################
+require(stringi)
+require(data.table)
 rm(list = ls())
 
 ## 0.2 set up the working directory ##########
@@ -16,24 +17,6 @@ load("data/RData/freq.RData")
 ##############################################
 ## 1. Ngram table ############################
 ##############################################
-
-## below is too slow
-# tbBigram <- matrix(nrow = length(freqUni), ncol = length(freqUni))
-# i <- 1
-# j <- 1
-# for (i in 1:length(freqUni)) {
-#     for (j in 1:length(freqUni)) {
-#         gram <- paste(names(freqUni[i]), names(freqUni[j]))
-#         
-#         freqUp <- freqBi[gram]
-#         freqDown <- freqUp[j]
-#         
-#         if (is.null(freqUp)) {
-#             freqUp <- 0
-#         }
-#         tbBigram[i, j] <-  freqUp / freqDown
-#     }
-# }
 
 ## 1.1 create a function to extract elements #
 ## in a gram #################################
@@ -56,12 +39,19 @@ NgramTb <- function (mxFreq) {
   
   return(tbGram)
 }
+
+## 1.2 create probability gram tables ########
 tbUnigram <- NgramTb(freqUni)
 tbBigram <- NgramTb(freqBi)
 tbTrigram <- NgramTb(freqTri)
 tbQuatrgram <- NgramTb(freqQuatr)
 
-
+setkey(tbUnigram, x)
+setkey(tbBigram, x)
+setkey(tbTrigram, x)
+setkey(tbQuatrgram, x)
+## 1.3 save the gram tables ##################
+save(tbUnigram, tbBigram, tbTrigram, tbQuatrgram, file = "data/RData/tbGram.RData")
 
   
   
