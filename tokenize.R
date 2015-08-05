@@ -90,9 +90,9 @@ cumQuatr <- cumsum(sortQuatr)
 plot(x = cumQuatr, y = sortQuatr, type = "line")
 
 ## 1.7 remove rare events ###################
-freqUni <- freqUni[which(freqUni > 1)]
-freqBi <- freqBi[which(freqBi > 1)]
-freqTri <- freqTri[which(freqTri > 1)]
-freqQuatr <- freqQuatr[which(freqQuatr > 1)]
+# freqUni <- freqUni[which(freqUni > 1)]
+# freqBi <- freqBi[which(freqBi > 1)]
+# freqTri <- freqTri[which(freqTri > 1)]
+# freqQuatr <- freqQuatr[which(freqQuatr > 1)]
 
 save(freqUni, freqBi, freqTri, freqQuatr, file = "data/RData/freq.RData")
