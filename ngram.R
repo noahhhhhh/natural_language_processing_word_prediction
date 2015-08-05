@@ -25,15 +25,32 @@ NgramTb <- function (mxFreq) {
   ## Args: mxFreq: a ngram frequency matrix
   ## Return: a ngram probability table
   
-  ## determins the n of the ngram
-  n <- length(unlist(gregexpr(" ", names(mxFreq)[1]))) + 1
+  ## determines the positions of space in grams
+  vecPos <- unlist(gregexpr(" ", names(mxFreq)[1])[1])
+  
+  ## length of the positions of space
+  len <- length(vecPos)
+  
+  ## determinss the n of the ngram
+  if (len == 1) {
+    if (vecPos == -1) {
+      n <- 1 ## Unigram
+    } else {
+      n <- 2 ## Bigram
+    }
+  } else {
+    n <- len + 1 ## others
+  }
+  
+  
   ## substring the grams into 2 parts, last word and the rest words
   listWords <- stri_split_fixed(names(mxFreq), " ")
   vecLastWord <- sapply(listWords, function (x) unlist(x)[n])
   vecRestWowrds <- sapply(listWords, function (x) paste(unlist(x)[-n], collapse = " "))
+  
   ## build a data table
-  tbGram <- data.table("ngram" = names(mxFreq)
-                       , "freq" = mxFreq
+  tbGram <- data.table("gram" = names(mxFreq)
+                       , "prob" = mxFreq
                        , "x" = vecRestWowrds
                        , "y" = vecLastWord)
   
@@ -46,13 +63,51 @@ tbBigram <- NgramTb(freqBi)
 tbTrigram <- NgramTb(freqTri)
 tbQuatrgram <- NgramTb(freqQuatr)
 
+setnames(tbUnigram, "gram", "unigram")
+setnames(tbBigram, "gram", "bigram")
+setnames(tbTrigram, "gram", "trigram")
+setnames(tbQuatrgram, "gram", "quatrgram")
+
 setkey(tbUnigram, x)
 setkey(tbBigram, x)
 setkey(tbTrigram, x)
 setkey(tbQuatrgram, x)
-## 1.3 save the gram tables ##################
+
+## 1.3 update the prob using something like ##
+## p(i am a) = count(i am a) / count(i am) ###
+## - the numerator is the existing prob ######
+## - the denumerator is from the prob of a ###
+## lower gram model ##########################
+
+tbBigram <- cbind(tbBigram[, !"prob", with = F]
+                  , data.table(
+                    merge(x = as.data.frame(tbBigram)
+                          , y = tbUnigram
+                          , by.x = "x"
+                          , by.y = "unigram")
+                  )[, prob := prob.x / prob.y][, "prob", with = F])
+
+tbTrigram <- cbind(tbTrigram[, !"prob", with = F]
+      , data.table(
+        merge(x = as.data.frame(tbTrigram)
+              , y = tbBigram
+              , by.x = "x"
+              , by.y = "bigram")
+        )[, prob := prob.x / prob.y][, "prob", with = F])
+
+tbQuatrgram <- cbind(tbQuatrgram[, !"prob", with = F]
+                   , data.table(
+                     merge(x = as.data.frame(tbQuatrgram)
+                           , y = tbTrigram
+                           , by.x = "x"
+                           , by.y = "trigram")
+                   )[, prob := prob.x / prob.y][, "prob", with = F])
+
+setkey(tbUnigram, x)
+setkey(tbBigram, x)
+setkey(tbTrigram, x)
+setkey(tbQuatrgram, x)
+
+## 1.4 save the gram tables ##################
 save(tbUnigram, tbBigram, tbTrigram, tbQuatrgram, file = "data/RData/tbGram.RData")
 
-  
-  
-  
