@@ -54,7 +54,7 @@ NgramTb <- function (mxFreq) {
     
     ## build a data table
     tbGram <- data.table("gram" = names(mxFreq)
-                         , "prob" = mxFreq
+                         , "freq" = mxFreq
                          , "x" = vecRestWowrds
                          , "y" = vecLastWord)
     
@@ -72,43 +72,43 @@ setnames(tbBigram, "gram", "bigram")
 setnames(tbTrigram, "gram", "trigram")
 setnames(tbQuatrgram, "gram", "quatrgram")
 
-## 1.3 update the prob using something like ##
-## p(i am a) = count(i am a) / count(i am) ###
-## - the numerator is the existing prob ######
-## - the denumerator is from the prob of a ###
-## lower gram model ##########################
-
-## quatrgram
-tbQuatrgram <- cbind(tbQuatrgram[, !"prob", with = F]
-                     , data.table(
-                         merge(x = as.data.frame(tbQuatrgram)
-                               , y = tbTrigram
-                               , by.x = "x"
-                               , by.y = "trigram")
-                     )[, prob := prob.x / prob.y][, "prob", with = F])
-
-## trigram
-tbTrigram <- cbind(tbTrigram[, !"prob", with = F]
-                   , data.table(
-                       merge(x = as.data.frame(tbTrigram)
-                             , y = tbBigram
-                             , by.x = "x"
-                             , by.y = "bigram")
-                   )[, prob := prob.x / prob.y][, "prob", with = F])
-
-## bigram
-tbBigram <- cbind(tbBigram[, !"prob", with = F]
-                  , data.table(
-                      merge(x = as.data.frame(tbBigram)
-                            , y = tbUnigram
-                            , by.x = "x"
-                            , by.y = "unigram")
-                  )[, prob := prob.x / prob.y][, "prob", with = F])
-
-## unigram
-## total number of words (unigram)
-nWords <- sum(tbUnigram[, "prob", with = F])
-tbUnigram <- tbUnigram[, "prob" := prob / nWords]
+# ## 1.3 update the prob using something like ##
+# ## p(i am a) = count(i am a) / count(i am) ###
+# ## - the numerator is the existing prob ######
+# ## - the denumerator is from the prob of a ###
+# ## lower gram model ##########################
+# 
+# ## quatrgram
+# tbQuatrgram <- cbind(tbQuatrgram[, !"prob", with = F]
+#                      , data.table(
+#                          merge(x = as.data.frame(tbQuatrgram)
+#                                , y = tbTrigram
+#                                , by.x = "x"
+#                                , by.y = "trigram")
+#                      )[, prob := prob.x / prob.y][, "prob", with = F])
+# 
+# ## trigram
+# tbTrigram <- cbind(tbTrigram[, !"prob", with = F]
+#                    , data.table(
+#                        merge(x = as.data.frame(tbTrigram)
+#                              , y = tbBigram
+#                              , by.x = "x"
+#                              , by.y = "bigram")
+#                    )[, prob := prob.x / prob.y][, "prob", with = F])
+# 
+# ## bigram
+# tbBigram <- cbind(tbBigram[, !"prob", with = F]
+#                   , data.table(
+#                       merge(x = as.data.frame(tbBigram)
+#                             , y = tbUnigram
+#                             , by.x = "x"
+#                             , by.y = "unigram")
+#                   )[, prob := prob.x / prob.y][, "prob", with = F])
+# 
+# ## unigram
+# ## total number of words (unigram)
+# nWords <- sum(tbUnigram[, "prob", with = F])
+# tbUnigram <- tbUnigram[, "prob" := prob / nWords]
 
 ## 1.4 save the gram tables ##################
 save(tbUnigram, tbBigram, tbTrigram, tbQuatrgram, file = "data/RData/tbGram.RData")

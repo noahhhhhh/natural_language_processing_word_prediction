@@ -84,7 +84,7 @@ PredGram <- function(input) {
     inputStr3 <- paste(inputGrams, collapse = " ")
     
     ## search in the Quatrgram table
-    tbResult3 <- tbQuatrgram[inputStr3][, c("y", "prob"), with = F]
+    tbResult3 <- tbQuatrgram[inputStr3][, c("y", "freq"), with = F]
     
     ## if nothing was found, go to Trigram table
     if (nrow(tbResult3) == 1 & is.na(as.vector(tbResult3[, "y", with = F][1])) == T) {
@@ -92,7 +92,7 @@ PredGram <- function(input) {
         inputStr2 <- paste(inputGrams[c(2, 3)], collapse = " ")
         
         ## search in the Trigram table
-        tbResult2 <- tbTrigram[inputStr2][, c("y", "prob"), with = F]
+        tbResult2 <- tbTrigram[inputStr2][, c("y", "freq"), with = F]
         
         ## if nothing was found, go the Bigram table
         if (nrow(tbResult2) == 1 & is.na(as.vector(tbResult2[, "y", with = F][1])) == T) {
@@ -100,29 +100,29 @@ PredGram <- function(input) {
             inputStr1 <- paste(inputGrams[3], collapse = " ")
             
             ## search in the Trigram table
-            tbResult1 <- tbBigram[inputStr1][, c("y", "prob"), with = F]
+            tbResult1 <- tbBigram[inputStr1][, c("y", "freq"), with = F]
             
             ## if nothing was found, go the Unigram table
             if (nrow(tbResult1) == 1 & is.na(as.vector(tbResult1[, "y", with = F][1])) == T) {
                 ## sort the result
-                tbSortedResult0 <- tbUnigram[, c("y", "prob"), with = F][order(-rank(prob), y)]
+                tbSortedResult0 <- tbUnigram[, c("y", "freq"), with = F][order(-rank(freq), y)]
                 
                 return(tbSortedResult0) ## return Unigram result ##
             } else {
                 ## sort the result
-                tbSortedResult1 <- tbResult1[order(-rank(prob), y)]
+                tbSortedResult1 <- tbResult1[order(-rank(freq), y)]
                 
                 return(tbSortedResult1) ## return Bigram result ##
             }
         } else {
             ## sort the result
-            tbSortedResult2 <- tbResult2[order(-rank(prob), y)]
+            tbSortedResult2 <- tbResult2[order(-rank(freq), y)]
             
             return(tbSortedResult2) ## return Trigram result ##
         }
     } else {
         ## sort the result
-        tbSortedResult3 <- tbResult3[order(-rank(prob), y)]
+        tbSortedResult3 <- tbResult3[order(-rank(freq), y)]
         
         return(tbSortedResult3) ## return Quatrgram result ##
     }
