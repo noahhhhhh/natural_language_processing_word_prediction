@@ -4,8 +4,7 @@
 
 ## 0.1 load the required libraries and clean #
 ## up the memory #############################
-library(shiny)
-require(RColorBrewer)
+require(shiny)
 ## 0.2 set up the working directory ##########
 setwd("/Volumes/Data Science/Google Drive/learning_data_science/Coursera/capstone/")
 
@@ -18,30 +17,85 @@ function(input, output, session) {
         withProgress({
             setProgress(message = "predicting ...")
             tbPred <- PredGram(input$input)
-#             # Update select input
-#             updateSelectizeInput(session = session
-#                               , inputId = "selectize"
-#                               , choices = paste(input$input, as.matrix(tbPred[, 1]))
-#             )
-#             # Update radio button
-#             updateRadioButtons(session = session
-#                                , inputId = "radio"
-#                                , choices = paste(input$input, as.matrix(tbPred[, 1]))
-#             )
-            
-            
+
             tbPred
         })
             
     })
-#     # Update text input
-#     input$button
-#     isolate({
-#         updateTextInput(session = session
-#                         , inputId = "input"
-#                         , value = input$radio
-#         )
-#     })
+    
+    observe({
+        v <- terms()
+        updateTextInput(session = session
+                        , inputId = "outputGuess1"
+                        , value = v[, 1][1]
+        )
+        updateTextInput(session = session
+                        , inputId = "outputGuess2"
+                        , value = v[, 1][2]
+        )
+        updateTextInput(session = session
+                        , inputId = "outputGuess3"
+                        , value = v[, 1][3]
+        )
+        updateTextInput(session = session
+                        , inputId = "outputGuess4"
+                        , value = v[, 1][4]
+        )
+        updateTextInput(session = session
+                        , inputId = "outputGuess4"
+                        , value = v[, 1][5]
+        )
+    })
+    
+    observe({
+        input$button1
+        isolate({
+            updateTextInput(session = session
+                            , inputId = "input"
+                            , value = gsub("\\s+", " ", paste(input$input, input$outputGuess1))
+            )
+        })
+    })
+    
+    observe({
+        input$button2
+        isolate({
+            updateTextInput(session = session
+                            , inputId = "input"
+                            , value = gsub("\\s+", " ", paste(input$input, input$outputGuess2))
+            )
+        })
+    })
+    
+    observe({
+        input$button3
+        isolate({
+            updateTextInput(session = session
+                            , inputId = "input"
+                            , value = gsub("\\s+", " ", paste(input$input, input$outputGuess3))
+            )
+        })
+    })
+    
+    observe({
+        input$button4
+        isolate({
+            updateTextInput(session = session
+                            , inputId = "input"
+                            , value = gsub("\\s+", " ", paste(input$input, input$outputGuess4))
+            )
+        })
+    })
+    
+    observe({
+        input$button5
+        isolate({
+            updateTextInput(session = session
+                            , inputId = "input"
+                            , value = gsub("\\s+", " ", paste(input$input, input$outputGuess5))
+            )
+        })
+    })
     
     # Make the wordcloud drawing predictable during a session
     wordcloud_rep <- repeatable(wordcloud)
@@ -49,8 +103,6 @@ function(input, output, session) {
     output$rankgraph <- renderPlot({
         RankingChart(tb = terms())
     })
-    
-    
     
     output$wordcloud <- renderPlot({
         v <- terms()

@@ -4,7 +4,7 @@
 
 ## 0.1 load the required libraries and clean #
 ## up the memory #############################
-library(shiny)
+require(shiny)
 
 ## 0.2 set up the working directory ##########
 setwd("/Volumes/Data Science/Google Drive/learning_data_science/Coursera/capstone/")
@@ -34,10 +34,10 @@ shinyUI(
             column(
                 width = 4
                 , textInput(
-                    ## 1.4 input text box ####
-                    inputId = "input"
-                    , label = ""
-                    , value = "How are")
+                          ## 1.4 input text box ####
+                          inputId = "input"
+                          , label = ""
+                          , value = "How are")
                 , tags$head(tags$style(type="text/css", "#input {width: 450px}"))
                 , offset = 4
             )
@@ -52,23 +52,76 @@ shinyUI(
                 )
             
             , column(
-                ## 1.4.2 select and button
+                ## 1.4.2 predictions and button
                 width = 4
-                , selectizeInput(inputId = "selectize"
+                ## 1.4.2.1 #1 guess
+                , div(style = "display:inline-block"
+                      , textInput(
+                          ## 1.4 input text box ####
+                          inputId = "outputGuess1"
+                          , label = "#1 Guess"
+                          )
+                      , width = 2)
+                , div(style = "display:inline-block"
+                      , actionButton(inputId = "button1"
                                      , label = ""
-                                     , choices = c("How are")
-                                     , selected = "How are"
-                                     )
+                                     , icon = icon(name = "ok", lib = "glyphicon"))
+                      )
+                ## 1.4.2.2 #2 guess
+                , div(style = "display:inline-block"
+                      , textInput(
+                          ## 1.4 input text box ####
+                          inputId = "outputGuess2"
+                          , label = "#2 Guess"
+                          )
+                      , width = 2)
+                , div(style = "display:inline-block"
+                      , actionButton(inputId = "button2"
+                                     , label = ""
+                                     , icon = icon(name = "ok", lib = "glyphicon"))
+                )
                 
-                , radioButtons(inputId = "radio"
-                               , label = ""
-                               , choices = c("How are")
-                               )
+                ## 1.4.2.3 #3 guess
+                , div(style = "display:inline-block"
+                      , textInput(
+                          ## 1.4 input text box ####
+                          inputId = "outputGuess3"
+                          , label = "#3 Guess"
+                          )
+                      , width = 2)
+                , div(style = "display:inline-block"
+                      , actionButton(inputId = "button3"
+                                     , label = ""
+                                     , icon = icon(name = "ok", lib = "glyphicon"))
+                )
                 
-                , actionButton(inputId = "button"
-                               , label = ""
-                               , icon = icon(name = "ok", lib = "glyphicon")
-                               )
+                ## 1.4.2.4 #4 guess
+                , div(style = "display:inline-block"
+                      , textInput(
+                          ## 1.4 input text box ####
+                          inputId = "outputGuess4"
+                          , label = "#4 Guess"
+                          )
+                      , width = 2)
+                , div(style = "display:inline-block"
+                      , actionButton(inputId = "button4"
+                                     , label = ""
+                                     , icon = icon(name = "ok", lib = "glyphicon"))
+                )
+                
+                ## 1.4.2.5 #5 guess
+                , div(style = "display:inline-block"
+                      , textInput(
+                          ## 1.4 input text box ####
+                          inputId = "outputGuess5"
+                          , label = "#5 Guess"
+                          )
+                      , width = 2)
+                , div(style = "display:inline-block"
+                      , actionButton(inputId = "button5"
+                                     , label = ""
+                                     , icon = icon(name = "ok", lib = "glyphicon"))
+                )
                 )
             
             , column(
