@@ -5,7 +5,7 @@
 ## 0.1 load the required libraries and clean #
 ## up the memory #############################
 require(shiny)
-
+require(shinythemes)
 ## 0.2 set up the working directory ##########
 setwd("/Volumes/Data Science/Google Drive/learning_data_science/Coursera/capstone/")
 
@@ -18,10 +18,10 @@ shinyUI(
         theme = "button.css"
         
         , fluidRow(
-            theme = "button.css"
             ## 1.2 navigation bar ############
-            , navbarPage(
+            navbarPage(
                 title = "SwiftKey - Word Prediction"
+                , theme = shinytheme("cerulean")
                 , tabPanel("Demo")
                 , tabPanel("Document")
             )

@@ -5,6 +5,7 @@
 ## 0.1 load the required libraries and clean #
 ## up the memory #############################
 require(shiny)
+require(shinythemes)
 require(tm)
 require(wordcloud)
 require(memoise)
