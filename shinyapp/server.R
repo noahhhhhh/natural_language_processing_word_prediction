@@ -15,7 +15,7 @@ function(input, output, session) {
     terms <- reactive({
         # change when
         withProgress({
-            setProgress(message = "predicting ...")
+            setProgress(message = "initializing ...")
             tbPred <- PredGram(input$input)
 
             tbPred
