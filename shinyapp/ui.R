@@ -124,7 +124,7 @@ shinyUI(
                           , actionButton(inputId = "button5"
                                          , label = ""
                                          , icon = icon(name = "check", lib = "font-awesome", class = "fa-lg button"))
-                    )
+                          )
                 )
                 
             )
@@ -143,8 +143,8 @@ shinyUI(
             , width = "100%"
             , hr()
             , a(class="fa fa-github fa-2x button", style="text-decoration:none;", href = "https://github.com/noahhhhhh/natural_language_processing_word_prediction", target = "_blank")
-            , a(class="fa fa-linkedin fa-2x button", style="text-decoration:none;", href = "https://github.com/noahhhhhh/natural_language_processing_word_prediction", target = "_blank")
-            , a(class="fa fa-envelope fa-2x button", style="text-decoration:none;", href = "https://github.com/noahhhhhh/natural_language_processing_word_prediction", target = "_blank")
+            , a(class="fa fa-linkedin fa-2x button", style="text-decoration:none;", href = "https://au.linkedin.com/in/mengnoahxiao", target = "_blank")
+            , a(class="fa fa-envelope fa-2x button", style="text-decoration:none;", href = "mailto:noah.xm.shaw@gmail.com", target = "_blank")
             , div(helpText("Noah Xiao - BI/Analytics Consultant. Aug. 2015"), style="display: inline-block; text-align: right;")
             , hr()
         )
