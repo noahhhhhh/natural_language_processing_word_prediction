@@ -7,7 +7,7 @@
 require(shiny)
 require(shinythemes)
 ## 0.2 set up the working directory ##########
-setwd("/Volumes/Data Science/Google Drive/learning_data_science/Coursera/capstone/")
+# setwd("/Volumes/Data Science/Google Drive/learning_data_science/Coursera/capstone/")
 
 ##############################################
 ## 1. UI #####################################
@@ -22,8 +22,6 @@ shinyUI(
             navbarPage(
                 title = "SwiftKey - Word Prediction"
                 , theme = shinytheme("cerulean")
-                , tabPanel("Demo")
-                , tabPanel("Document")
             )
         )
         
@@ -31,16 +29,15 @@ shinyUI(
         , hr()
         
         , fluidRow(
-            ## 1.3 the main content ##########
             column(
                 width = 4
-                , textInput(
-                          ## 1.4 input text box ####
-                          inputId = "input"
-                          , label = ""
-                          , value = "")
-                , tags$head(tags$style(type="text/css", "#input {width: 450px}"))
                 , offset = 4
+                , textInput(
+                    ## 1.4 input text box ####
+                    inputId = "input"
+                    , label = ""
+                    , value = "")
+                , tags$head(tags$style(type="text/css", "#input {width: 150%}"))
             )
         )
         
@@ -52,8 +49,8 @@ shinyUI(
                 , conditionalPanel(
                     condition = "input.input.trim() != ''"
                     , plotOutput("rankgraph")
-                    )
                 )
+            )
             
             , column(
                 ## 1.4.2 predictions and button
@@ -71,7 +68,7 @@ shinyUI(
                     , div(style = "display:inline-block"
                           , actionButton(inputId = "button1"
                                          , label = ""
-                                         , icon = icon(name = "ok", lib = "glyphicon"))
+                                         , icon = icon(name = "check", lib = "font-awesome", class = "fa-lg button"))
                     )
                     ## 1.4.2.2 #2 guess
                     , div(style = "display:inline-block"
@@ -84,7 +81,7 @@ shinyUI(
                     , div(style = "display:inline-block"
                           , actionButton(inputId = "button2"
                                          , label = ""
-                                         , icon = icon(name = "ok", lib = "glyphicon"))
+                                         , icon = icon(name = "check", lib = "font-awesome", class = "fa-lg button"))
                     )
                     
                     ## 1.4.2.3 #3 guess
@@ -98,7 +95,7 @@ shinyUI(
                     , div(style = "display:inline-block"
                           , actionButton(inputId = "button3"
                                          , label = ""
-                                         , icon = icon(name = "ok", lib = "glyphicon"))
+                                         , icon = icon(name = "check", lib = "font-awesome", class = "fa-lg button"))
                     )
                     
                     ## 1.4.2.4 #4 guess
@@ -112,7 +109,7 @@ shinyUI(
                     , div(style = "display:inline-block"
                           , actionButton(inputId = "button4"
                                          , label = ""
-                                         , icon = icon(name = "ok", lib = "glyphicon"))
+                                         , icon = icon(name = "check", lib = "font-awesome", class = "fa-lg button"))
                     )
                     
                     ## 1.4.2.5 #5 guess
@@ -126,30 +123,30 @@ shinyUI(
                     , div(style = "display:inline-block"
                           , actionButton(inputId = "button5"
                                          , label = ""
-                                         , icon = icon(name = "ok", lib = "glyphicon"))
-                          )
+                                         , icon = icon(name = "check", lib = "font-awesome", class = "fa-lg button"))
                     )
-                
                 )
+                
+            )
             
             , column(
                 width = 4
                 , conditionalPanel(
                     condition = "input.input.trim() != ''"
                     , plotOutput("wordcloud")
-                    )
                 )
-            
             )
+            
+        )
         , absolutePanel(
             bottom = "0%"
             , width = "100%"
             , hr()
-            , actionLink(inputId = "github", label = "", icon = icon(name = "github", lib = "font-awesome", class = "fa-2x button"))
-            , actionLink(inputId = "linked", label = "", icon = icon(name = "linkedin", lib = "font-awesome", class = "fa-2x button"))
-            , actionLink(inputId = "evelope", label = "", icon = icon(name = "envelope", lib = "font-awesome", class = "fa-2x button"))
-            , div(helpText("Noah Xiao - BI/Analytics Consultant. 2015 Aug    "), style="display: inline-block; text-align: right;")
+            , a(class="fa fa-github fa-2x button", style="text-decoration:none;", href = "https://github.com/noahhhhhh/natural_language_processing_word_prediction", target = "_blank")
+            , a(class="fa fa-linkedin fa-2x button", style="text-decoration:none;", href = "https://github.com/noahhhhhh/natural_language_processing_word_prediction", target = "_blank")
+            , a(class="fa fa-envelope fa-2x button", style="text-decoration:none;", href = "https://github.com/noahhhhhh/natural_language_processing_word_prediction", target = "_blank")
+            , div(helpText("Noah Xiao - BI/Analytics Consultant. Aug. 2015"), style="display: inline-block; text-align: right;")
             , hr()
-            )
         )
     )
+)
