@@ -83,7 +83,7 @@ function(input, output, session) {
                             , value = v[, 1][4]
             )
             updateTextInput(session = session
-                            , inputId = "outputGuess4"
+                            , inputId = "outputGuess5"
                             , value = v[, 1][5]
             )
         }
