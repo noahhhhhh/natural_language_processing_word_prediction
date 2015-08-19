@@ -14,8 +14,10 @@ require(RColorBrewer)
 rm(list = ls())
 gc()
 ## 0.2 set up the working directory ##########
-setwd("/Volumes/Data Science/Google Drive/learning_data_science/Coursera/capstone/")
+# setwd("/Volumes/Data Science/Google Drive/learning_data_science/Coursera/capstone/")
 
 ## 0.3 load the file and prediction function #
-source("natural_language_processing_word_prediction/prediction.R")
-source("natural_language_processing_word_prediction/shinyapp/RankingChart.R")
+# source("natural_language_processing_word_prediction/prediction.R")
+source("prediction.R")
+# source("natural_language_processing_word_prediction/shinyapp/RankingChart.R")
+source("RankingChart.R")
